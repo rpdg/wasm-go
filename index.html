@@ -1,0 +1,45 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>test golang wasm</title>
+</head>
+
+<body>
+
+  <button id="runButton1" onClick="sayMsg(add(1, 2));" disabled>add 1 + 2</button>
+  <button id="runButton2" onClick="sayMsg(calMD5('hello'));" disabled>alert</button>
+
+  <script src="./wasm_exec.js"></script>
+
+  <script>
+    if (!WebAssembly.instantiateStreaming) {
+      // polyfill
+      WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+      };
+    }
+
+    (async function init() {
+      const go = new Go();
+
+      let {
+        module,
+        instance
+      } = await WebAssembly.instantiateStreaming(fetch("./lib.wasm"), go.importObject);
+
+
+      document.getElementById("runButton1").removeAttribute('disabled');
+      document.getElementById("runButton2").removeAttribute('disabled');
+
+      await go.run(instance);
+
+      alert('ok')
+    })();
+
+  </script>
+
+</body>
+
+</html>

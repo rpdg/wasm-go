@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "options": {
+        "env": {
+            "GOPATH": "/home/rpdg/go-projects",
+            "GOROOT": "/usr/local/go",
+            "GOARCH": "wasm",
+            "GOOS": "js"
+        }
+    },
+    "tasks": [
+        {
+            "label": "build wasm",
+            "type": "shell",
+            "command": "go",
+            "args": [
+                "build",
+                "-o",
+                "lib.wasm",
+                "."
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$go"]
+        }
+    ]
+}
