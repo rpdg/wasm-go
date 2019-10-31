@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "serve": "serve --ssl-cert ./cert/file.crt --ssl-key ./cert/private.pem" ,
+        "build" : "tinygo build -opt=1 -o lib.wasm -target wasm ./main.go"
+    }
+}

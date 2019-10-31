@@ -6,28 +6,6 @@ import (
     "encoding/hex"
 )
 
-var c chan bool
-
-func init() {
-	println("Initialize WebAssembly!")
-	c = make(chan bool)
-}
-
-func main() {
-	println("WASM Initialized")
-
-	// register functions
-	registerCallbacks()
-
-	<- c
-}
-
-
-func registerCallbacks() {
-	js.Global().Set("add", js.FuncOf(add))
-	js.Global().Set("sayMsg", js.FuncOf(sayMsg))
-	js.Global().Set("calMD5", js.FuncOf(calMD5))
-}
 
 
 func sayMsg(this js.Value, args []js.Value) interface{} {
@@ -49,5 +27,30 @@ func calMD5(this js.Value, args []js.Value) interface{} {
 func add(this js.Value, i []js.Value) interface{} {
 	sum := i[0].Int() + i[1].Int()
     return js.ValueOf(sum)
+}
+
+
+func registerCallbacks() {
+	js.Global().Set("add", js.FuncOf(add))
+	js.Global().Set("sayMsg", js.FuncOf(sayMsg))
+	js.Global().Set("calMD5", js.FuncOf(calMD5))
+}
+
+
+var c chan bool
+
+func init() {
+	println("Initialize WebAssembly!")
+	c = make(chan bool)
+}
+
+func main() {
+
+	// register functions
+	registerCallbacks()
+
+	println("WASM Initialized")
+
+	<- c
 }
 

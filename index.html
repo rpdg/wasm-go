@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title>test golang wasm</title>
   <style>
-    button{
+    button {
       display: block;
       padding: 1em;
       font-size: 6vw;
@@ -24,7 +24,7 @@
   <script src="./wasm_exec_tinygo.js"></script>
 
   <script>
-    if (!WebAssembly.instantiateStreaming) {
+    /* if (!WebAssembly.instantiateStreaming) {
       // polyfill
       WebAssembly.instantiateStreaming = async (resp, importObject) => {
         const source = await (await resp).arrayBuffer();
@@ -48,7 +48,36 @@
 
       alert('ok')
     })();
+ */
 
+
+    const go = new Go(); // Defined in wasm_exec.js
+    const WASM_URL = 'lib.wasm';
+
+    var wasm;
+
+    if ('instantiateStreaming' in WebAssembly) {
+      WebAssembly.instantiateStreaming(fetch(WASM_URL), go.importObject).then(function (obj) {
+        wasm = obj.instance;
+        go.run(wasm);
+      })
+    } else {
+      fetch(WASM_URL).then(resp =>
+        resp.arrayBuffer()
+      ).then(bytes =>
+        WebAssembly.instantiate(bytes, go.importObject).then(function (obj) {
+          wasm = obj.instance;
+
+
+          document.getElementById("runButton1").removeAttribute('disabled');
+          document.getElementById("runButton2").removeAttribute('disabled');
+
+
+
+          go.run(wasm);
+        })
+      )
+    }
   </script>
 
 </body>
